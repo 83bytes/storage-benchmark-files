@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+mkdir /mnt/ext4Only
+mkdir /mnt/ext4Luks
+mkdir /mnt/btrfsOnly
+mkdir /mnt/btrfsLuks
+
+
+cryptsetup luksOpen /dev/sda2 ext4Luks
+
+cryptsetup luksOpen /dev/sda4 btrfsLuks
+
+mount /dev/sda1 /mnt/ext4Only
+mount /dev/sda3 /mnt/btrfsOnly
+mount /dev/mapper/ext4Luks /mnt/ext4Luks
+mount /dev/mapper/btrfsLuks /mnt/btrfsLuks
+
+
+
+# unmount things safely
+
+umount /dev/mapper/btrfsLuks
+umount /dev/mapper/ext4Luks
+cryptsetup luksClose ext4Luks
+cryptsetup luksClose btrfsLuks
+umount /mnt/ext4Only
+umount /mnt/btrfsOnly
